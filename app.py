@@ -1,16 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import openai
 import os
 import traceback
+from openai import OpenAI
 
 app = Flask(__name__)
 CORS(app)
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def get_openai_response(message):
-    response = openai.ChatCompletion.create(
+    chat_completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful English tutor named Dzsini."},
@@ -18,7 +18,7 @@ def get_openai_response(message):
         ],
         temperature=0.7
     )
-    return response.choices[0].message["content"]
+    return chat_completion.choices[0].message.content
 
 @app.route("/chat", methods=["POST"])
 def chat():
