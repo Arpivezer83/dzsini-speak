@@ -44,7 +44,7 @@
           body: JSON.stringify({ message })
         });
         const data = await res.json();
-        appendMessage('ai', data.reply);
+        appendMessage('ai', data.response);
       } catch (err) {
         appendMessage('ai', '⚠️ Error talking to Dzsini.');
         console.error(err);
