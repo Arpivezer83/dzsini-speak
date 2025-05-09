@@ -2,36 +2,21 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import openai
 import os
+import traceback
 
 app = Flask(__name__)
 CORS(app)  # globális engedélyezés fallbackként
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-@app.route("/chat", methods=["POST", "OPTIONS"])
-@cross_origin(origin="https://dzsini.onlyhuman.hu", methods=["POST", "OPTIONS"])
+@app.route("/chat", methods=["POST"])
 def chat():
-    if request.method == "OPTIONS":
-        # preflight válasz, amit a böngésző küld először
-        return '', 200
-
-    data = request.get_json()
-    prompt = data.get("message", "")
-
-    if not prompt:
-        return jsonify({"error": "No message provided"}), 400
-
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful English tutor named Dzsini."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        answer = response.choices[0].message["content"]
-        return jsonify({"reply": answer})
+        data = request.get_json()
+        message = data.get("message", "")
+        response = get_openai_response(message)
+        return jsonify({"response": response})
     except Exception as e:
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
