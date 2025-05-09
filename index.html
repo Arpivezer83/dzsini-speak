@@ -37,7 +37,8 @@
       textInput.value = '';
 
       try {
-        const res = await fetch('https://dzsini-api.onrender.com/chat', {
+        const res = await fetch('https://dzsini-speak.onrender.com/chat', {
+
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message })
