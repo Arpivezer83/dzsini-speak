@@ -1,19 +1,19 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import openai
 import os
 
 app = Flask(__name__)
-
-# 💡 Ez engedélyezi konkrétan a frontend domaint
-CORS(app, origins=["https://dzsini.onlyhuman.hu"], methods=["POST", "OPTIONS"])
+CORS(app)  # globális engedélyezés fallbackként
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/chat", methods=["POST", "OPTIONS"])
+@cross_origin(origin="https://dzsini.onlyhuman.hu", methods=["POST", "OPTIONS"])
 def chat():
     if request.method == "OPTIONS":
-        return '', 200  # preflight CORS válasz
+        # preflight válasz, amit a böngésző küld először
+        return '', 200
 
     data = request.get_json()
     prompt = data.get("message", "")
