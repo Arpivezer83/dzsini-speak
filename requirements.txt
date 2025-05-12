@@ -1,3 +1,5 @@
 flask
-openai
 flask-cors
+flask-limiter
+python-dotenv
+openai>=1.0.0
